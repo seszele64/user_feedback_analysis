@@ -1,3 +1,5 @@
+# file: src/database/connection.py
+
 from google.cloud import bigquery, storage
 from google.oauth2 import service_account
 from src.utils.config import config
@@ -5,39 +7,49 @@ from src.utils.logging import Logger
 
 logger = Logger().logger
 
-def get_bigquery_client():
-    """
-    Creates and returns a BigQuery client using the service account credentials.
+class BigQueryConnection:
+    _instance = None
 
-    Returns:
-        google.cloud.bigquery.Client: An authenticated BigQuery client.
-    """
-    try:
-        credentials = service_account.Credentials.from_service_account_file(config.SERVICE_ACCOUNT_FILE)
-        return bigquery.Client(credentials=credentials, project=config.PROJECT_ID)
-    except Exception as e:
-        logger.error(f"Error creating BigQuery client: {str(e)}")
-        raise
+    @classmethod
+    def get_client(cls):
+        if cls._instance is None:
+            cls._instance = cls._create_client()
+        return cls._instance
+
+    @staticmethod
+    def _create_client():
+        try:
+            credentials = service_account.Credentials.from_service_account_file(config.SERVICE_ACCOUNT_FILE)
+            return bigquery.Client(credentials=credentials, project=config.PROJECT_ID)
+        except Exception as e:
+            logger.error(f"Error creating BigQuery client: {str(e)}")
+            raise
+
+class StorageConnection:
+    _instance = None
+
+    @classmethod
+    def get_client(cls):
+        if cls._instance is None:
+            cls._instance = cls._create_client()
+        return cls._instance
+
+    @staticmethod
+    def _create_client():
+        try:
+            credentials = service_account.Credentials.from_service_account_file(config.SERVICE_ACCOUNT_FILE)
+            return storage.Client(credentials=credentials, project=config.PROJECT_ID)
+        except Exception as e:
+            logger.error(f"Error creating Storage client: {str(e)}")
+            raise
+
+def get_bigquery_client():
+    return BigQueryConnection.get_client()
 
 def get_storage_client():
-    """
-    Creates and returns a Google Cloud Storage client using the service account credentials.
-
-    Returns:
-        google.cloud.storage.Client: An authenticated Google Cloud Storage client.
-    """
-    try:
-        credentials = service_account.Credentials.from_service_account_file(config.SERVICE_ACCOUNT_FILE)
-        return storage.Client(credentials=credentials, project=config.PROJECT_ID)
-    except Exception as e:
-        logger.error(f"Error creating Storage client: {str(e)}")
-        raise
+    return StorageConnection.get_client()
 
 def test_connections():
-    """
-    Tests the BigQuery and Storage connections by creating clients.
-    This function can be used to verify that the connections are working correctly.
-    """
     try:
         bigquery_client = get_bigquery_client()
         storage_client = get_storage_client()
