@@ -40,4 +40,6 @@ class Config:
 
         self.GCS_CSV_PATH = f"gs://{self.BUCKET_NAME}/{self.BLOB_NAME}" if self.BUCKET_NAME and self.BLOB_NAME else None
 
+        self.OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
 config = Config()
