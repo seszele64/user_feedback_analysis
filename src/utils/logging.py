@@ -33,6 +33,5 @@ class Logger:
         """Property to access the logger."""
         return self._logger
     
-# Example usage
-if __name__ == "__main__":
-    logger = Logger().logger
+# Create a logger instance
+logger = Logger().logger
