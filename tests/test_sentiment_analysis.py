@@ -1,4 +1,8 @@
 # file: tests/test_sentiment_analysis.py
+from src.utils.config import config
+from src.sentiment.sentiment_analysis import evaluate_sentiment, perform_sentiment_analysis
+from unittest.mock import patch, MagicMock
+import unittest
 import os
 import sys
 from pathlib import Path
@@ -6,18 +10,15 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-import unittest
-from unittest.mock import patch, MagicMock
-from src.analysis.sentiment_analysis import evaluate_sentiment, perform_sentiment_analysis
-from src.utils.config import config
 
 class TestSentimentAnalysis(unittest.TestCase):
 
-    @patch('src.analysis.sentiment_analysis.OpenAI')
+    @patch('src.sentiment.sentiment_analysis.OpenAI')
     def test_evaluate_sentiment(self, mock_openai):
         # Mock the OpenAI client and its response
         mock_client = MagicMock()
-        mock_client.chat.completions.create.return_value.choices[0].message.content = "{'score': 0.8, 'magnitude': 0.9}"
+        mock_client.chat.completions.create.return_value.choices[
+            0].message.content = "{'score': 0.8, 'magnitude': 0.9}"
         mock_openai.return_value = mock_client
 
         # Test the evaluate_sentiment function
@@ -28,11 +29,12 @@ class TestSentimentAnalysis(unittest.TestCase):
         mock_client.chat.completions.create.assert_called_once()
         call_args = mock_client.chat.completions.create.call_args[1]
         self.assertEqual(call_args['model'], "gpt-3.5-turbo")
-        self.assertIn("This is a great product!", call_args['messages'][1]['content'])
+        self.assertIn("This is a great product!",
+                      call_args['messages'][1]['content'])
 
-    @patch('src.analysis.sentiment_analysis.get_data')
-    @patch('src.analysis.sentiment_analysis.insert_rows')
-    @patch('src.analysis.sentiment_analysis.evaluate_sentiment')
+    @patch('src.sentiment.sentiment_analysis.get_data')
+    @patch('src.sentiment.sentiment_analysis.insert_rows')
+    @patch('src.sentiment.sentiment_analysis.evaluate_sentiment')
     def test_perform_sentiment_analysis(self, mock_evaluate_sentiment, mock_insert_rows, mock_get_data):
         # Mock the database operations
         mock_get_data.return_value = [
@@ -69,6 +71,7 @@ class TestSentimentAnalysis(unittest.TestCase):
         self.assertEqual(args[1][0]['Score'], 0.8)
         self.assertEqual(args[1][1]['Id'], '2')
         self.assertEqual(args[1][1]['Score'], -0.6)
+
 
 if __name__ == '__main__':
     unittest.main()

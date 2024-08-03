@@ -3,6 +3,7 @@
 This project collects and analyzes user feedback using Python, Google Cloud Platform (GCP), BigQuery, and sentiment analysis.
 
 ## Table of Contents
+
 - [User Feedback Analysis System](#user-feedback-analysis-system)
   - [Table of Contents](#table-of-contents)
   - [Project Overview](#project-overview)
@@ -35,53 +36,55 @@ This system is designed to collect user feedback from a CSV file, store it in Go
 ## Setup
 
 1. Clone the repository:
-    ```bash
-    git clone https://github.com/yourusername/user-feedback-analysis.git
-    cd user-feedback-analysis
-    ```
 
+   ```bash
+   git clone https://github.com/yourusername/user-feedback-analysis.git
+   cd user-feedback-analysis
+   ```
 2. Install dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
 
+   ```bash
+   pip install -r requirements.txt
+   ```
 3. Set up Google Cloud credentials:
-    - Create a service account and download the JSON key
-    - Set the environment variable:
-      ```bash
-      export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your/service-account-key.json"
-      ```
 
+   - Create a service account and download the JSON key
+   - Set the environment variable:
+     ```bash
+     export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your/service-account-key.json"
+     ```
 4. Set up OpenAI API key:
-    ```bash
-    export OPENAI_API_KEY="your-api-key"
-    ```
 
+   ```bash
+   export OPENAI_API_KEY="your-api-key"
+   ```
 5. Configure the project:
-    - Update the `config.py` file in the `src/utils` directory with your project-specific settings
+
+   - Update the `config.py` file in the `src/utils` directory with your project-specific settings
 
 ## Usage
 
 1. Load data into BigQuery:
-    ```python
-    from src.data import load_csv_to_bigquery
-    
-    load_csv_to_bigquery()
-    ```
 
+   ```python
+   from src.data import load_csv_to_bigquery
+
+   load_csv_to_bigquery()
+   ```
 2. Set up BigQuery tables:
-    ```python
-    from src.database import setup_tables
-    
-    setup_tables()
-    ```
 
+   ```python
+   from src.database import setup_tables
+
+   setup_tables()
+   ```
 3. Perform sentiment analysis:
-    ```python
-    from src.analysis import analyze_sentiment
-    
-    analyze_sentiment()
-    ```
+
+   ```python
+   from src.sentiment import analyze_sentiment
+
+   analyze_sentiment()
+   ```
 
 ## Project Structure
 
@@ -96,7 +99,7 @@ user_feedback_analysis/
 │   │   ├── __init__.py
 │   │   ├── connection.py
 │   │   ├── operations.py
-│   ├── analysis/
+│   ├── sentiment/
 │   │   ├── __init__.py
 │   │   └── sentiment_analysis.py
 │   └── utils/
